@@ -11,10 +11,13 @@ public class Movement : MonoBehaviour
     bool canRotateLeft = false;
     bool canRotateRight = false;
     Rigidbody rb;
+    AudioSource audioSource;
 
     void Awake() 
     {
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+
     }
 
     void Start()
@@ -68,6 +71,15 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.UpArrow))
         {
             canThrust = true;
+
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        }
+        else if (audioSource.isPlaying)
+        {
+            audioSource.Stop();
         }
     }
 
