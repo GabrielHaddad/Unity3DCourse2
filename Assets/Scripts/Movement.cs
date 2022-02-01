@@ -48,14 +48,19 @@ public class Movement : MonoBehaviour
     {
         if (canRotateLeft)
         {
-            rb.AddRelativeTorque(Vector3.forward * torqueAmount);
+            AddTorque(torqueAmount);
             canRotateLeft = false;
         }
         else if (canRotateRight)
         {
-            rb.AddRelativeTorque(Vector3.forward * -torqueAmount);
+            AddTorque(-torqueAmount);
             canRotateRight = false;
         }
+    }
+
+    void AddTorque(float torque)
+    {
+        rb.AddRelativeTorque(Vector3.forward * torque);
     }
 
     void ProcessThrust()
