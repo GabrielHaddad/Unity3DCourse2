@@ -5,11 +5,23 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] float thrustForce;
     [SerializeField] float torqueAmount;
+
+    [Header("Thrust Sound")]
+    [SerializeField] AudioClip thrustSound;
+    [SerializeField] [Range(0, 1)] float thrustVolume;
+
+    [Header("Particles")]
+    [SerializeField] ParticleSystem thrustParticles;
+    [SerializeField] ParticleSystem leftThrustParticles;
+    [SerializeField] ParticleSystem rightThrustParticles;
+
     bool canThrust = false;
     bool canRotateLeft = false;
     bool canRotateRight = false;
+    
     Rigidbody rb;
     AudioSource audioSource;
 
@@ -71,15 +83,31 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.UpArrow))
         {
             canThrust = true;
-
-            if (!audioSource.isPlaying)
-            {
-                audioSource.Play();
-            }
+            PlayEffectsThrust();
         }
-        else if (audioSource.isPlaying)
+        else
         {
-            audioSource.Stop();
+            StopEffectsThrust();
+        }
+    }
+
+    private void StopEffectsThrust()
+    {
+        audioSource.Stop();
+        thrustParticles.Stop();
+    }
+
+    private void PlayEffectsThrust()
+    {
+        if (!audioSource.isPlaying)
+        {
+            audioSource.pitch = 1f;
+            audioSource.PlayOneShot(thrustSound, thrustVolume);
+        }
+
+        if (!thrustParticles.isPlaying)
+        {
+            thrustParticles.Play();
         }
     }
 
@@ -88,10 +116,31 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             canRotateLeft = true;
+            PlayEffectsRotate(rightThrustParticles);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
             canRotateRight = true;
+
+            PlayEffectsRotate(leftThrustParticles);
+        }
+        else
+        {
+            StopEffectsRotate();
+        }
+    }
+
+    private void StopEffectsRotate()
+    {
+        rightThrustParticles.Stop();
+        leftThrustParticles.Stop();
+    }
+
+    private void PlayEffectsRotate(ParticleSystem particle)
+    {
+        if (!particle.isPlaying)
+        {
+            particle.Play();
         }
     }
 }
